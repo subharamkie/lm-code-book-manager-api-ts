@@ -22,3 +22,18 @@ export const updateBook = async (bookId: number, book: Book) => {
 		},
 	});
 };
+
+//User story - delete Book by Id
+export const deleteBook = async (bookId: number) => {
+	try {
+		const result = await Book.destroy({
+			where: {
+				bookId,
+			},
+		});
+
+		return result; // Returns the number of rows affected (0 or 1)
+	} catch (error) {
+		throw error;
+	}
+};
