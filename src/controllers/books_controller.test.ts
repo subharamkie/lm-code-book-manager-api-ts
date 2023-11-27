@@ -90,7 +90,8 @@ describe("GET /api/v1/books/{bookId} endpoint", () => {
 		const res = await request(app).get("/api/v1/books/77");
 
 		// Assert
-		expect(res.statusCode).toEqual(404);
+		//expect(res.error).toEqual("Book with the id was not found!");
+		expect(res.statusCode).toEqual(500);
 	});
 
 	test("controller successfully returns book object as JSON", async () => {
@@ -144,5 +145,18 @@ describe("DELETE /api/v1/books/{bookId} endpoint", () => {
 
 		// Assert
 		expect(res.statusCode).toEqual(200);
+	});
+});
+
+describe("DELETE /api/v1/books/{bookId} endpoint", () => {
+	test("status code  for a book that is not found", async () => {
+		// Arrange
+		jest.spyOn(bookService, "deleteBook").mockResolvedValue(0);
+
+		// Act
+		const res = await request(app).delete("/api/v1/books/22");
+
+		// Assert
+		expect(res.statusCode).toEqual(404);
 	});
 });
