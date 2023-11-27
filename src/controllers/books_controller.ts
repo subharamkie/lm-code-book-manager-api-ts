@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as bookService from "../services/books";
+import badRequestError from "../error/badRequestError";
+import { customError } from "../error/customError";
 
 export const getBooks = async (
 	req: Request,
@@ -21,24 +23,30 @@ export const getBook = async (
 ) => {
 	const bookId = req.params.bookId;
 	if (!bookId) {
-		return next(new Error("Id is required!"));
+		throw new badRequestError({
+			code: 400,
+			message: "Book id is required.",
+			logging: true,
+		});
 	}
 	try {
 		const book = await bookService.getBook(Number(bookId));
 		if (!book) {
-			return next(new Error("Book with the id was not found!"));
+			//returns an error with 204,no content returned by server.
+			return next(
+				new badRequestError({
+					code: 204,
+					message: "Book id was not found.",
+					logging: true,
+				})
+			);
 		} else {
 			res.json(book).status(200);
 		}
 	} catch (err) {
 		res.status(404).json("Not found");
 		next(err);
-	} /*
-	if (book) {
-		res.json(book).status(200);
-	} else {
-		res.status(404).json("Not found");
-	}*/
+	}
 };
 
 export const saveBook = async (req: Request, res: Response) => {
@@ -73,7 +81,14 @@ export const deleteBook = async (
 		if (book) {
 			res.json(book).status(200);
 		} else {
-			res.status(404).json("Book was not found");
+			return next(
+				new badRequestError({
+					code: 404,
+					message: "Book id was not found.",
+					logging: true,
+				})
+			);
+			//res.status(404).json("Book was not found");
 		}
 	} catch (error) {
 		res.status(400).json({ message: (error as Error).message });

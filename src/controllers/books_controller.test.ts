@@ -91,7 +91,7 @@ describe("GET /api/v1/books/{bookId} endpoint", () => {
 
 		// Assert
 		//expect(res.error).toEqual("Book with the id was not found!");
-		expect(res.statusCode).toEqual(500);
+		expect(res.statusCode).toEqual(204);
 	});
 
 	test("controller successfully returns book object as JSON", async () => {
@@ -100,7 +100,7 @@ describe("GET /api/v1/books/{bookId} endpoint", () => {
 			.spyOn(bookService, "getBook")
 			.mockResolvedValue(dummyBookData[1] as Book);
 
-		// Act
+		// Actq
 		const res = await request(app).get("/api/v1/books/2");
 
 		// Assert
