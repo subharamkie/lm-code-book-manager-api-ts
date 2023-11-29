@@ -11,3 +11,5 @@ router.put("/books/:bookId", booksController.updateBook);
 
 //User Story -- Delete book by book Id
 router.delete("/books/:bookId", booksController.deleteBook);
+
+router.get("/bookreviews", booksController.getReviews);

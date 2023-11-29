@@ -3,6 +3,7 @@ import { app } from "../app";
 import { Book } from "../models/book";
 
 import * as bookService from "../services/books";
+import { BookReview } from "../models/bookReview";
 jest.mock("../services/books");
 
 afterEach(() => {
@@ -22,6 +23,23 @@ const dummyBookData = [
 		author: "Neil Hughes",
 		description:
 			"Before being born, each person must visit the magical Shop Before Life, where they choose what kind of person they will become down on Earth...",
+	},
+];
+
+const dummyReviewData = [
+	{
+		reviewId: 1,
+		comments:
+			"A wonderfully satisfying fantasy adventure that not only connects to the previous films, but charts its own ground with great effectiveness.",
+		bookId: 1,
+		authorId: 1,
+		rating: 5,
+		Book: {
+			bookId: 1,
+			title: "The Hobbit",
+			author: "J. R. R. Tolkien",
+			description: "Someone finds a nice piece of jewellery while on holiday.",
+		},
 	},
 ];
 
@@ -77,7 +95,7 @@ describe("GET /api/v1/books/{bookId} endpoint", () => {
 		expect(res.statusCode).toEqual(200);
 	});
 
-	test("status code successfully 404 for a book that is not found", async () => {
+	test("status code successfully 204 for a book that is not found", async () => {
 		// Arrange
 
 		jest
@@ -90,7 +108,7 @@ describe("GET /api/v1/books/{bookId} endpoint", () => {
 		const res = await request(app).get("/api/v1/books/77");
 
 		// Assert
-		//expect(res.error).toEqual("Book with the id was not found!");
+
 		expect(res.statusCode).toEqual(204);
 	});
 
@@ -158,5 +176,28 @@ describe("DELETE /api/v1/books/{bookId} endpoint", () => {
 
 		// Assert
 		expect(res.statusCode).toEqual(404);
+	});
+});
+
+describe("Get /api/vi/bookreviews/ endpoint", () => {
+	test("status code successfully 200", async () => {
+		// Act
+		const res = await request(app).get("/api/v1/bookreviews");
+
+		// Assert
+		expect(res.statusCode).toEqual(200);
+	});
+
+	test("books successfully returned as empty array when no data returned from the service", async () => {
+		// Arrange
+		jest
+			.spyOn(bookService, "getReviews")
+			.mockResolvedValue(dummyReviewData as unknown as BookReview[]);
+		// Act
+		const res = await request(app).get("/api/v1/bookreviews");
+
+		// Assert
+		expect(res.body).toEqual(dummyReviewData);
+		expect(res.statusCode).toEqual(200);
 	});
 });

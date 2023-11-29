@@ -94,3 +94,16 @@ export const deleteBook = async (
 		res.status(400).json({ message: (error as Error).message });
 	}
 };
+
+export const getReviews = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const reviews = await bookService.getReviews();
+		res.json(reviews).status(200);
+	} catch (err) {
+		next(err);
+	}
+};

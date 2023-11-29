@@ -1,4 +1,6 @@
+import { Author } from "../models/author";
 import { Book } from "../models/book";
+import { BookReview } from "../models/bookReview";
 
 export const getBooks = async () => {
 	return Book.findAll();
@@ -36,4 +38,14 @@ export const deleteBook = async (bookId: number) => {
 	} catch (error) {
 		throw error;
 	}
+};
+
+export const getReviews = async () => {
+	return BookReview.findAll({
+		include: [
+			{
+				model: Book,
+			},
+		],
+	});
 };

@@ -16,7 +16,6 @@ export class Book extends Model<
 	declare author: string;
 	declare description: string;
 }
-
 Book.init(
 	{
 		bookId: {
@@ -43,3 +42,4 @@ Book.init(
 		sequelize: sequelize,
 	}
 );
+//Book.belongsTo(Author, { foreignKey: "authorId" });
