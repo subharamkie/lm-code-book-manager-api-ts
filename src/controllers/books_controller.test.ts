@@ -136,7 +136,18 @@ describe("POST /api/v1/books endpoint", () => {
 		// Assert
 		expect(res.statusCode).toEqual(201);
 	});
+	test("status code 400 for saving a book that exists already", async () => {
+		jest.spyOn(bookService, "saveBook").mockImplementation(() => {
+			throw new Error("Error saving book");
+		});
+		// Act
+		const res = await request(app)
+			.post("/api/v1/books")
+			.send({ bookId: 3, title: "Fantastic Mr. Fox", author: "Roald Dahl" });
 
+		// Assert
+		expect(res.statusCode).toEqual(400);
+	});
 	test("status code 400 when saving ill formatted JSON", async () => {
 		// Arrange - we can enforce throwing an exception by mocking the implementation
 		jest.spyOn(bookService, "saveBook").mockImplementation(() => {
@@ -179,6 +190,20 @@ describe("DELETE /api/v1/books/{bookId} endpoint", () => {
 	});
 });
 
+describe("DELETE /api/v1/books/{bookId} endpoint", () => {
+	test("status code  for invalid bookId", async () => {
+		// Arrange
+		jest.spyOn(bookService, "deleteBook").mockResolvedValue(0);
+
+		// Act
+		const res = await request(app).delete("/api/v1/books/abc");
+
+		// Assert
+		console.log(res);
+
+		expect(res.statusCode).toEqual(404);
+	});
+});
 describe("Get /api/vi/bookreviews/ endpoint", () => {
 	test("status code successfully 200", async () => {
 		// Act
